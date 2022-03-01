@@ -1,0 +1,55 @@
+pipeline {
+    agent {
+        label 'one-view'
+    }
+    stages {
+        stage('Checkout Script') {
+            steps {
+                dir('cicd') {
+                    git changelog: false, poll: false, branch: 'master', url: 'https://github.hpe.com/infosight/onelytics-cicd.git'
+		}
+            }
+        }
+        stage('Set Build Name') {
+            steps {
+                script {
+                    env.GIT_COMMIT_AUTHOR_EMAIL = sh (returnStdout: true, script: ''' git log -1 --pretty=format:"%ae" ''')
+                    def setBuildName = load pwd() + '/cicd/jenkins/setbuild_name.groovy'
+                    setBuildName.buildName()
+                }
+             }
+         }
+        stage('Build and Unit Test') {
+            steps {
+                script {
+                    def jenkinsfile = load pwd() + '/cicd/jenkins/uncompress-service/build_test_deploy_pipeline.groovy'
+                    jenkinsfile.buildAndUnitTest()
+                }
+            }
+        }
+	stage('Deploy Service') {
+            when {
+                expression {
+		    "${GIT_BRANCH}" == "origin/master"
+                }
+            }
+            steps {
+                script {
+                    def jenkinsfile = load pwd() + '/cicd/jenkins/uncompress-service/build_test_deploy_pipeline.groovy'
+		    jenkinsfile.deploy()
+                }
+            }
+        }
+    }
+    post { 
+         always {
+            script {
+                def cleanUp = load pwd() + '/cicd/jenkins/uncompress-service/build_test_deploy_pipeline.groovy'
+                cleanUp.cleanUpEnv()
+                def email = load pwd() + '/cicd/jenkins/email.groovy'
+                email.sendEmail()
+            } 
+            cleanWs()
+         }
+    }
+}

@@ -1,0 +1,24 @@
+<assembly>
+  <files>
+    <file>
+      <source>${project.basedir}/target/uncompress-adc-service-${project.version}.jar</source>
+      <outputDirectory>app</outputDirectory>
+    </file>
+    <file>
+      <source>${project.basedir}/src/main/resources/service_start.sh</source>
+      <outputDirectory>app</outputDirectory>
+    </file>
+    <file>
+      <source>${project.basedir}/src/main/resources/application.conf</source>
+      <outputDirectory>app</outputDirectory>
+    </file>
+    <file>
+      <source>${project.basedir}/src/lib/Decryption-Util.jar</source>
+      <outputDirectory>app</outputDirectory>
+    </file>
+    <file>
+      <source>${project.basedir}/src/test/resources/encrypted_adc.tar.gz</source>
+      <outputDirectory>adc</outputDirectory>
+    </file>
+  </files>
+</assembly>

@@ -1,0 +1,79 @@
+{
+    "testdata": [{
+            "testid": "1",
+            "testDescription":"Test with all attributes populated with correct values",
+            "kafkaAsserts": [{"payloadElementsSize" : 11},{"notNull":"Device-SID"},{"Equal":"Device-SID,14770ae2-aa53-43a7-b769-b1fd742265a8"},{"notEqual":"Product-Class,abc"}],
+            "kafkapayload": {
+                "Device-SID": "14770ae2-aa53-43a7-b769-b1fd742265a8",
+                "Device-SN": "VMware-42 3f 06 9d 0d 1d 6a ea-80 44 25 a1 ef 9e c4 f5",
+                "File-Class": "data-file",
+                "File-Name": "encrypted_adc.tar.gz",
+                "File-Size": "830333",
+                "File-URL": "/adc/encrypted_adc.tar.gz",
+                "File-UUID": "37ccc038-2207-4713-8fc2-c786e96d1f8e",
+                "Product-Class": "oneview",
+                "Product-ID": "ai-cicvc3-126.vse.rdlabs.hpecorp.net",
+                "Upload-Date": 1568073826000
+            }
+        },
+        {
+            "testid": "2",
+            "testDescription":"Test with all attributes populated with invalid Device-SID",
+            "kafkaAsserts": [{"payloadElementsSize" : 11},{"notNull":"Device-SID"},{"Equal":"Device-SID,222"},{"notEqual":"Product-Class,abc"}],
+            "kafkapayload": {
+                "Device-SID": "222",
+                "Device-SN": "VMware-42 3f 06 9d 0d 1d 6a ea-80 44 25 a1 ef 9e c4 f5",
+                "File-Class": "data-file",
+                "File-Name": "encrypted_adc.tar.gz",
+                "File-Size": "830333",
+                "File-URL": "/adc/encrypted_adc.tar.gz",
+                "File-UUID": "37ccc038-2207-4713-8fc2-c786e96d1f8e",
+                "Product-Class": "oneview",
+                "Product-ID": "ai-cicvc3-126.vse.rdlabs.hpecorp.net",
+                "Upload-Date": 1568073826000
+            }
+        },
+        {
+            "testid": "3",
+            "testDescription":"Test for missing Device-SN",
+            "kafkaAsserts": [{"payloadElementsSize" : 11},{"notNull":"Device-SID"},{"Equal":"Device-SID,14770ae2-aa53-43a7-b769-b1fd742265a8"},{"notEqual":"Product-Class,abc"},{"Null":"Device-SN"}],
+            "kafkapayload": {
+                "Test-ID": "unknown parameter",
+                "Device-SID": "14770ae2-aa53-43a7-b769-b1fd742265a8",
+                "File-Class": "data-file",
+                "File-Name": "encrypted_adc.tar.gz",
+                "File-Size": "830333",
+                "File-URL": "/adc/encrypted_adc.tar.gz",
+                "File-UUID": "37ccc038-2207-4713-8fc2-c786e96d1f8e",
+                "Product-Class": "oneview",
+                "Product-ID": "ai-cicvc3-126.vse.rdlabs.hpecorp.net",
+                "Upload-Date": 1568073826000
+            }
+        },
+        {
+            "testid": "4",
+            "testDescription":"Test for empty message",
+            "kafkaAsserts": [{"noMessageProduced" : "true"}],
+            "kafkapayload": {
+            }
+        },
+        {
+            "testid": "5",
+            "testDescription":"Test for ADC file that is not available for processing",
+            "kafkaAsserts": [{"noMessageProduced" : "true"}],
+            "kafkapayload": {
+                "Test-ID": "unknown parameter",
+                "Device-SID": "14770ae2-aa53-43a7-b769-b1fd742265a8",
+                "Device-SN": "VMware-42 3f 06 9d 0d 1d 6a ea-80 44 25 a1 ef 9e c4 f5",
+                "File-Class": "data-file",
+                "File-Name": "encrypted_adc.tar.gz",
+                "File-Size": "830333",
+                "File-URL": "/adcNotFound/encrypted_adc.tar.gz",
+                "File-UUID": "37ccc038-2207-4713-8fc2-c786e96d1f8e",
+                "Product-Class": "oneview",
+                "Product-ID": "ai-cicvc3-126.vse.rdlabs.hpecorp.net",
+                "Upload-Date": 1568073826000
+            }
+        }
+    ]
+}

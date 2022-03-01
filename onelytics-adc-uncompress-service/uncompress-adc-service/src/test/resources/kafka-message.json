@@ -1,0 +1,12 @@
+{
+	"Device-SID": "14770ae2-aa53-43a7-b769-b1fd742265a8",
+	"Device-SN": "VMware-42 3f 06 9d 0d 1d 6a ea-80 44 25 a1 ef 9e c4 f5",
+	"File-Class": "data-file",
+	"File-Name": "encrypted_adc.tar.gz",
+	"File-Size": "830333",
+	"File-URL": "C:\\Users\\Administrator\\eclipse-workspace\\uncompress-adc-service\\src\\test\\resources\\encrypted_adc.tar.gz",
+	"File-UUID": "37ccc038-2207-4713-8fc2-c786e96d1f8e",
+	"Product-Class": "oneview",
+	"Product-ID": "ai-cicvc3-126.vse.rdlabs.hpecorp.net",
+	"Upload-Date": 1568073826000
+}

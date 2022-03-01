@@ -1,0 +1,11 @@
+# (C) Copyright 2019 Hewlett Packard Enterprise Development LP
+FROM openjdk:8
+RUN echo $JAVA_HOME
+RUN ls /
+COPY ./target/standalone-java-consumer-v2-1.0-jar-with-dependencies.jar /app/standalone-java-consumer-v2-1.0-jar-with-dependencies.jar
+COPY ./target/kafka-server-parent1.cer /app/kafka-server-parent1.cer
+COPY ./target/kafka-server3.crt /app/kafka-server3.crt
+#RUN ls /usr/local/openjdk-8/jre/lib/security
+RUN echo "yes" | keytool -storepass changeit -keystore $JAVA_HOME/jre/lib/security/cacerts -import -trustcacerts -file /app/kafka-server-parent1.cer -alias kafka-server-parent
+RUN echo "yes" | keytool -storepass changeit -keystore $JAVA_HOME/jre/lib/security/cacerts -import -trustcacerts -file /app/kafka-server3.crt -alias kafka-server-1
+CMD java -jar /app/standalone-java-consumer-v2-1.0-jar-with-dependencies.jar

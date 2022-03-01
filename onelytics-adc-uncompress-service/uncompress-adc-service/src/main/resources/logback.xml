@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="10 seconds">
+    <property name="LOG_FILE" value="${LOG_FILE:-log/uncompress.log}" />
+
+	<!-- Simple file output -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}</file>
+
+		<!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+		<encoder>
+			<pattern>%date{"yyyy-MM-dd HH:mm:ss.SSS"} ${HOSTNAME} [%thread] %-5level
+				%logger{36} %X{sourceThread} %X{akkaSource} [fileUuid:%X{fileUuid}
+				stationId:%X{stationId}] - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>uncompress-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+			<!-- each file should be at most 100MB, keep 60 days worth of history,
+				but at most 20GB -->
+			<maxFileSize>100MB</maxFileSize>
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>20GB</totalSizeCap>
+		</rollingPolicy>
+
+		<!-- Safely log to the same file from multiple JVMs. Degrades performance! -->
+		<prudent>false</prudent>
+	</appender>
+
+	<!-- Console output -->
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+		<encoder>
+			<!--<pattern>%-5level %logger{36} - %msg%n</pattern> -->
+			<pattern>%date{"yyyy-MM-dd HH:mm:ss.SSS"} ${HOSTNAME} %-5level %logger{36} %X{sourceThread} %X{akkaSource} [fileUuid:%X{fileUuid} stationId:%X{stationId}] - %msg%n</pattern>
+		</encoder>
+		<!-- Only log level INFO and above -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+
+    <logger name="play" level="INFO" />
+    <!-- Set logging for all Akka library classes to INFO -->
+    <logger name="akka" level="INFO" />
+    <!-- Set logging for all Lagom library classes to INFO -->
+    <logger name="com.lightbend.lagom" level="INFO" />
+
+
+    <!-- Turn down Kafka noise -->
+    <logger name="org.apache.kafka" level="WARN" />
+    <!-- Project packages log level controlled as one -->
+    <logger name="com.hpe.onelytics.kafka.subscriber" level="INFO"/>
+    <logger name="com.hpe.onelytics.kafka.subscriber.impl" level="INFO"/>
+    <logger name="com.hpe.onelytics.uncompress.actors" level="INFO"/>
+    <logger name="com.hpe.onelytics.uncompress.utilities" level="INFO"/>
+
+	<!-- Enable FILE and STDOUT appenders for all log messages. By default, 
+		only log at level INFO and above. -->
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<!-- For loggers in the these namespaces, log at all levels. -->
+	<logger name="user" level="ALL" />
+	<!-- To log pedestal internals, enable this and change ThresholdFilter to 
+		DEBUG <logger name="pedestal" level="ALL" /> -->
+
+</configuration>

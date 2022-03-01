@@ -1,0 +1,352 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.hpe.onelytics</groupId>
+	<artifactId>uncompress-adc-service</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+    
+    <name>uncompress-adc-service</name>
+
+	<url>http://maven.apache.org</url>
+
+    <properties>
+        <!-- Uncompress service related properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala.binary.version>2.12</scala.binary.version>
+        <lagom.version>1.5.4</lagom.version>
+        <jackson.version>2.9.9</jackson.version>
+        
+        <!--  Junit 5 version -->
+        <junit-jupiter.version>5.5.2</junit-jupiter.version>
+        <junit.platform.version>1.5.2</junit.platform.version>
+        
+        <!-- Docker image related properties -->
+        <docker.image.prefix>onelytix</docker.image.prefix>
+	<docker.image.version>${project.version}</docker.image.version>
+	<build.number>jenkinsBuildId</build.number>
+    <build.user>${git.build.user.email}</build.user>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lightbend.lagom</groupId>
+                <artifactId>lagom-maven-dependencies</artifactId>
+                <version>${lagom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.8</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+	<dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+		<dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <!-- Lagom dependencies -->
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-api_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-kafka-broker_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-server_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-persistence-cassandra_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-integration-client_${scala.binary.version}</artifactId>
+        </dependency> 
+        
+        <!-- Akka dependencies -->
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play_${scala.binary.version}</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-discovery_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.lagom</groupId>
+            <artifactId>lagom-javadsl-akka-discovery-service-locator_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management-cluster-bootstrap_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream-kafka_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_${scala.binary.version}</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-slf4j_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-akka-http-server_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-cluster-metrics_${scala.binary.version}</artifactId>
+            <version>2.5.25</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-remote_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.10.6.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
+        
+        <!-- junit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!--  Oneview decrypt utility dependency -->
+        <dependency>
+            <groupId>oneview</groupId>
+            <artifactId>decryption-util</artifactId>
+            <version>3.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/Decryption-Util.jar</systemPath>
+        </dependency>
+        
+        <!--  Jackson dependencies -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>transport</artifactId>
+            <version>7.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+            <!-- Lagom plugin -->
+            <plugin>
+                <groupId>com.lightbend.lagom</groupId>
+                <artifactId>lagom-maven-plugin</artifactId>
+               <configuration>
+                    <lagomService>true</lagomService>
+                    <serviceLocatorEnabled>true</serviceLocatorEnabled>
+                    <cassandraEnabled>false</cassandraEnabled>
+                    <kafkaEnabled>false</kafkaEnabled>
+                    <kafkaAddress>127.0.0.1:9092</kafkaAddress>
+                    <unmanagedServices>
+                        <cas_native>http://127.0.0.1:4000</cas_native>
+                    </unmanagedServices>
+                </configuration>
+                
+            </plugin>
+            
+            <!-- Need at least 2.22.0 to support JUnit 5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+            </plugin>
+            
+            <!-- Maven plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+	    <plugin>
+		<groupId>pl.project13.maven</groupId>
+	        <artifactId>git-commit-id-plugin</artifactId>
+	        <version>2.2.4</version>
+	        <executions>
+        	    <execution>
+	                <phase>validate</phase>
+	                <goals>
+	                   <goal>revision</goal>
+	                </goals>
+        	    </execution>
+	        </executions>
+        	<configuration>
+		    <dateFormat>MM/dd/yyyy HH:mm:ss</dateFormat>
+	            <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+	            <generateGitPropertiesFile>false</generateGitPropertiesFile>
+	            <!--<verbose>true</verbose>-->
+        	</configuration>
+	    </plugin>
+
+	    <plugin>
+	        <groupId>io.fabric8</groupId>
+	        <artifactId>docker-maven-plugin</artifactId>
+	        <version>0.31.0</version>
+        	<configuration>
+	           <verbose>true</verbose>
+        	   <images>
+	             <image>
+	               <name>${docker.image.prefix}/${project.artifactId}:${docker.image.version}</name>
+	               <build>
+	                   <from>openjdk:8-jdk-alpine</from>
+	                   <!--<from>openjdk:8</from>-->
+	                   <maintainer>The HPE Onelytics dudes a.k.a ov-infosight. Email:ov-infosight@hpe.com</maintainer>
+        	           <tags>
+                	      <tag>${docker.image.version}</tag>
+	                   </tags>
+	                   <labels>
+	                      <commit_date>${git.commit.time}</commit_date>
+        	              <commit_id>${git.commit.id}</commit_id>
+	                      <commit_user>${git.commit.user.email}</commit_user>
+        	              <build_date>${git.build.time}</build_date>
+                	      <build_version>${git.build.version}</build_version>
+	                      <build_user>${build.user}</build_user>
+        	              <build_number>${build.number}</build_number>
+                	   </labels>
+                	   <assembly>
+                              <basedir>/</basedir>
+                              <descriptor>${project.basedir}/artifacts.xml</descriptor>
+                           </assembly>
+			   <workdir>/app</workdir>
+	                   <entryPoint>
+        	              <exec>
+                	         <arg>sh</arg>
+	                         <arg>service_start.sh</arg>
+        	              </exec>
+                	   </entryPoint>
+	                </build>
+	       	      </image>
+	           </images>
+	         </configuration>
+	         <executions>
+	            <execution>
+	               <id>install</id>
+        	       <phase>install</phase>
+	               <goals>
+        	          <goal>build</goal>
+	               </goals>
+        	    </execution>
+	            <execution>
+	               <id>pre-site</id>
+	               <phase>pre-site</phase>
+        	       <goals>
+	                  <goal>build</goal>
+        	          <goal>push</goal>
+	               </goals>
+	            </execution>
+	         </executions>
+	     </plugin>
+	
+		</plugins>
+	</build>
+	
+</project>
